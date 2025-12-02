@@ -16,6 +16,12 @@ import LinkedInIcon from "@mui/icons-material/LinkedIn";
 export default function Footer() {
   const logourl = `/logo.jpg`;
 
+  const links = [
+    { label: "Home", href: "/" },
+    { label: "Contact", href: "/contact" },
+    { label: "Privacy Policy", href: "/privacy-policy" },
+  ];
+
   return (
     <Box
       component="footer"
@@ -72,10 +78,10 @@ export default function Footer() {
             >
               Quick Links
             </Typography>
-            {["Home", "Contact", "Privacy Policy"].map((link) => (
-              <Typography key={link} variant="body2" sx={{ mb: 1 }}>
+            {links.map((item) => (
+              <Typography key={item.label} variant="body2" sx={{ mb: 1 }}>
                 <Link
-                  href={`/${link.toLowerCase().replace(" ", "-")}`}
+                  href={item.href}
                   color="inherit"
                   underline="none"
                   sx={{
@@ -83,7 +89,7 @@ export default function Footer() {
                     transition: "color 0.2s ease",
                   }}
                 >
-                  {link}
+                  {item.label}
                 </Link>
               </Typography>
             ))}
@@ -98,18 +104,27 @@ export default function Footer() {
             </Typography>
             <Box>
               <IconButton
-                href="#"
+                component="a"
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.instagram.com/testmax12089/"
                 sx={{ color: "#fff", "&:hover": { color: "#c42a49ff" } }}
               >
                 <InstagramIcon />
               </IconButton>
               <IconButton
+                component="a"
+                target="_blank"
+                rel="noopener noreferrer"
                 href="#"
                 sx={{ color: "#fff", "&:hover": { color: "#c42a49ff" } }}
               >
                 <TwitterIcon />
               </IconButton>
               <IconButton
+                component="a"
+                target="_blank"
+                rel="noopener noreferrer"
                 href="#"
                 sx={{ color: "#fff", "&:hover": { color: "#c42a49ff" } }}
               >
