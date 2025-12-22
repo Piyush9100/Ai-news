@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
     const mailOptions = {
       from: `"AI News Contact" <${process.env.EMAIL_USER}>`,
-      to: "aiwnews24.7@gmail.com", // your receiving email
+      to: "aiwnews24.7@gmail.com", //receiving email
       subject: `New Contact Message from ${name}`,
       html: `
         <h2>📩 New Contact Message</h2>

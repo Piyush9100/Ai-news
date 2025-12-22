@@ -10,7 +10,5 @@ export default function Page() {
     ? categoryParam[0]
     : categoryParam;
 
-  console.log("Category param from URL:", category);
-
   return <NewsCardGenerator category={category} />;
 }

@@ -2,87 +2,94 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "../../../lib/supabase-server";
 
 export async function GET(req: Request) {
-  const url = new URL(req.url);
-  const category = url.searchParams.get("category");
+  try {
+    const url = new URL(req.url);
+    const category = url.searchParams.get("category");
 
-  if (!category)
-    return NextResponse.json(
-      { error: "Category is required" },
-      { status: 400 }
-    );
-
-  console.log("Requested category:", category);
-
-  // 1️⃣ Check cache
-  const { data: cached, error: cacheError } = await supabaseServer
-    .from("news_cache")
-    .select("*")
-    .eq("category", category)
-    .single();
-
-  if (cacheError) console.log("Supabase error:", cacheError);
-  if (cached) {
-    console.log("Returning cached data:", cached);
-    return NextResponse.json({ fromCache: true, ...cached });
-  }
-
-  // 2️⃣ Fetch news from your original API
-  const newsRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/news/${category}`
-  );
-  const newsData = await newsRes.json();
-  console.log("Fetched news from original API:", newsData);
-
-  // 3️⃣ Shorten titles
-  const shortenRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/shorten-title`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ titles: newsData.titles }),
+    if (!category) {
+      return NextResponse.json(
+        { error: "Category is required" },
+        { status: 400 }
+      );
     }
-  );
-  const shortenData = await shortenRes.json();
 
-  // 4️⃣ Generate images
-  const canvasRes = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/generate-canvas`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        headlines: shortenData.shortenedTitles,
-        images: newsData.images,
-        category: category, // MUST include category
-      }),
+    console.log("📥 news-cache request:", category);
+
+    //Read cache
+    const { data: cached, error } = await supabaseServer
+      .from("news_cache")
+      .select("*")
+      .eq("category", category)
+      .single();
+
+    if (error && error.code !== "PGRST116") {
+      console.error("❌ Supabase read error:", error);
     }
-  );
-  const canvasData = await canvasRes.json();
 
-  // 5️⃣ Save to Supabase
-  const { data, error: upsertError } = await supabaseServer
-    .from("news_cache")
-    .upsert(
+    //Cache exists → return immediately
+    if (cached) {
+      console.log("✅ Returning cached data:", category);
+      return NextResponse.json({
+        fromCache: true,
+        articles: cached.articles,
+        titles: cached.titles,
+        descriptions: cached.descriptions,
+        shortened_titles: cached.shortened_titles,
+        images: cached.images,
+        updated_at: cached.updated_at,
+      });
+    }
+
+    //Cache empty → AUTO-SEED (RUNS ONCE)
+    console.log("🆕 Cache empty, seeding:", category);
+
+    const seedRes = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/internal/refresh-category`,
       {
-        category,
-        titles: newsData.titles,
-        descriptions: newsData.descriptions,
-        shortened_titles: shortenData.shortenedTitles,
-        images: canvasData.images,
-      },
-      { onConflict: "category" }
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ category }),
+      }
     );
 
-  console.log("Upsert data:", data, "Error:", upsertError);
+    if (!seedRes.ok) {
+      console.error("❌ Seed failed");
+      return NextResponse.json(
+        { error: "Failed to seed cache" },
+        { status: 500 }
+      );
+    }
 
-  if (upsertError) console.log("Supabase upsert error:", upsertError);
+    //Read again after seed
+    const { data: fresh } = await supabaseServer
+      .from("news_cache")
+      .select("*")
+      .eq("category", category)
+      .single();
 
-  // 6️⃣ Return data
-  return NextResponse.json({
-    fromCache: false,
-    titles: newsData.titles,
-    descriptions: newsData.descriptions,
-    shortened_titles: shortenData.shortenedTitles,
-    images: canvasData.images,
-  });
+    if (!fresh) {
+      return NextResponse.json(
+        { error: "Cache still empty after seed" },
+        { status: 500 }
+      );
+    }
+
+    console.log("✅ Seed successful:", category);
+
+    return NextResponse.json({
+      fromCache: false,
+      articles: fresh.articles,
+      titles: fresh.titles,
+      descriptions: fresh.descriptions,
+      shortened_titles: fresh.shortened_titles,
+      images: fresh.images,
+      updated_at: fresh.updated_at,
+    });
+  } catch (err) {
+    console.error("❌ news-cache crash:", err);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
 }

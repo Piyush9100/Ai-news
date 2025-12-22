@@ -5,23 +5,34 @@ import { Card, CardContent, Typography, Box } from "@mui/material";
 
 interface ViewParams {
   category: string;
-  id: string;
+  slug: string;
 }
 
 export default function ViewPage({ params }: { params: Promise<ViewParams> }) {
-  const { category, id } = use(params);
+  const { category, slug } = use(params);
   const [article, setArticle] = useState<any>(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
-      const res = await fetch(`/api/news/${category}`);
+      const res = await fetch(`/api/news-cache?category=${category}`);
       const data = await res.json();
 
-      setArticle(data.articles[Number(id)]);
+      const foundIndex = data.articles?.findIndex((a: any) => a.slug === slug);
+
+      if (foundIndex === -1) return;
+
+      setArticle({
+        title: data.titles?.[foundIndex],
+        description: data.descriptions?.[foundIndex],
+        image: data.images?.[foundIndex]?.publicUrl,
+        url: data.articles?.[foundIndex]?.url,
+        publishedAt: data.articles?.[foundIndex]?.publishedAt,
+        source: data.articles?.[foundIndex]?.source,
+      });
     };
 
     fetchDetails();
-  }, [category, id]);
+  }, [category, slug]);
 
   if (!article)
     return (
@@ -47,8 +58,6 @@ export default function ViewPage({ params }: { params: Promise<ViewParams> }) {
           >
             {article.title}
           </Typography>
-
-          {/* Image */}
           {article.image && (
             <Box
               component="img"
