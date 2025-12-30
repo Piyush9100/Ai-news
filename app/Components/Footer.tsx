@@ -14,7 +14,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 export default function Footer() {
-  const logourl = `/logo.jpg`;
+  const logourl = `/newlogo.png`;
 
   const links = [
     { label: "Home", href: "/" },
@@ -43,15 +43,9 @@ export default function Footer() {
                   display: "flex",
                   alignItems: "center",
                   textDecoration: "none",
+                  gap: 8,
                 }}
               >
-                <Typography
-                  variant="h6"
-                  sx={{ color: "#c42a49ff", fontWeight: "bold" }}
-                >
-                  News
-                </Typography>
-
                 <img
                   src={logourl}
                   alt="News 24"
@@ -63,6 +57,12 @@ export default function Footer() {
                     cursor: "pointer",
                   }}
                 />
+                <Typography
+                  variant="h6"
+                  sx={{ color: "#c42a49ff", fontWeight: "bold" }}
+                >
+                  News
+                </Typography>
               </Link>
             </Box>
             <Typography variant="body2" color="gray">

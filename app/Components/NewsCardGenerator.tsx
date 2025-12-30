@@ -17,11 +17,7 @@ export default function NewsCardGenerator({ category }: { category: string }) {
 
   const [loading, setLoading] = useState(true);
 
-  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
-
   useEffect(() => {
-    let interval: NodeJS.Timeout;
-
     async function load() {
       setLoading(true);
 
@@ -30,8 +26,6 @@ export default function NewsCardGenerator({ category }: { category: string }) {
       });
 
       const data = await res.json();
-
-      if (lastUpdated === data.updated_at) return;
 
       setTitles(data.titles || []);
       setShortTitles(data.shortened_titles || []);
@@ -42,11 +36,7 @@ export default function NewsCardGenerator({ category }: { category: string }) {
     }
 
     load();
-
-    interval = setInterval(load, 60_000);
-
-    return () => clearInterval(interval);
-  }, [category, lastUpdated]);
+  }, [category]);
 
   if (loading) {
     return (

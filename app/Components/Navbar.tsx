@@ -40,7 +40,7 @@ export default function Navbar() {
     { label: "Health", path: "/health" },
   ];
 
-  const logourl = `/logo.jpg`;
+  const logourl = `/newlogo.png`;
 
   return (
     <>
@@ -60,15 +60,9 @@ export default function Navbar() {
                 display: "flex",
                 alignItems: "center",
                 textDecoration: "none",
+                gap: 8,
               }}
             >
-              <Typography
-                variant="h6"
-                sx={{ color: "#c42a49ff", fontWeight: "bold" }}
-              >
-                News
-              </Typography>
-
               <img
                 src={logourl}
                 alt="News 24"
@@ -80,6 +74,12 @@ export default function Navbar() {
                   cursor: "pointer",
                 }}
               />
+              <Typography
+                variant="h6"
+                sx={{ color: "#c42a49ff", fontWeight: "bold" }}
+              >
+                News
+              </Typography>
             </Link>
           </Box>
 

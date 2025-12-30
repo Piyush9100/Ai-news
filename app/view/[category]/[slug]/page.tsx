@@ -67,7 +67,7 @@ export default function ViewPage({ params }: { params: Promise<ViewParams> }) {
                 width: "100%",
                 borderRadius: 2,
                 objectFit: "cover",
-                maxHeight: 350,
+                maxHeight: 500,
                 mb: 3,
               }}
             />

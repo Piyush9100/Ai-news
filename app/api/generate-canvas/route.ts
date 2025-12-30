@@ -70,6 +70,16 @@ export async function POST(req: Request) {
                   box-shadow:0 6px 20px rgba(0,0,0,0.15);
                 "
               >
+                 <img
+                  src="${process.env.NEXT_PUBLIC_BASE_URL}/newlogo.png"
+                  style="
+                    width:105px;
+                    height:105px;
+                    object-fit:cover;
+                    background:#fff;
+                    border:4px solid #fff;
+                  "
+                />
                 <div
                   style="
                     font-size:70px;
@@ -80,16 +90,7 @@ export async function POST(req: Request) {
                 >
                   News
                 </div>
-                <img
-                  src="${process.env.NEXT_PUBLIC_BASE_URL}/logo.jpg"
-                  style="
-                    width:105px;
-                    height:105px;
-                    object-fit:cover;
-                    background:#fff;
-                    border:4px solid #fff;
-                  "
-                />
+               
               </div>
 
               <!-- TITLE -->
