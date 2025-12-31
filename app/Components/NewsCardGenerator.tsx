@@ -72,7 +72,7 @@ export default function NewsCardGenerator({ category }: { category: string }) {
                     alt={shortTitles[idx]}
                     width={400}
                     height={300}
-                    style={{ borderRadius: 8 }}
+                    style={{ borderRadius: 8, width: "100%" }}
                   />
                 )}
               </CardContent>
