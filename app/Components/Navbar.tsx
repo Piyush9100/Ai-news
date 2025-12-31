@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import {
   AppBar,
   Toolbar,
@@ -40,7 +41,7 @@ export default function Navbar() {
     { label: "Health", path: "/health" },
   ];
 
-  const logourl = `/newlogo.png`;
+  const logourl = `/news-24x7.png`;
 
   return (
     <>
@@ -63,23 +64,17 @@ export default function Navbar() {
                 gap: 8,
               }}
             >
-              <img
+              <Image
                 src={logourl}
-                alt="News 24"
+                alt="iNews"
+                width={155}
+                height={155}
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: "50%",
-                  marginLeft: 8,
                   cursor: "pointer",
+                  marginTop: 20,
                 }}
+                priority
               />
-              <Typography
-                variant="h6"
-                sx={{ color: "#c42a49ff", fontWeight: "bold" }}
-              >
-                News
-              </Typography>
             </Link>
           </Box>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import {
   Box,
   Container,
@@ -14,7 +15,7 @@ import TwitterIcon from "@mui/icons-material/Twitter";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 
 export default function Footer() {
-  const logourl = `/newlogo.png`;
+  const logourl = `/news-24x7.png`;
 
   const links = [
     { label: "Home", href: "/" },
@@ -36,36 +37,19 @@ export default function Footer() {
       <Container maxWidth="lg">
         <Grid container spacing={4}>
           <Grid size={{ xs: 12, md: 4 }}>
-            <Box sx={{ display: "flex", alignItems: "center", mb: 2, gap: 1 }}>
-              <Link
-                href="/"
+            <Link href="/">
+              <Image
+                src={logourl}
+                alt="iNews"
+                width={155}
+                height={155}
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  textDecoration: "none",
-                  gap: 8,
+                  cursor: "pointer",
                 }}
-              >
-                <img
-                  src={logourl}
-                  alt="News 24"
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    marginLeft: 8,
-                    cursor: "pointer",
-                  }}
-                />
-                <Typography
-                  variant="h6"
-                  sx={{ color: "#c42a49ff", fontWeight: "bold" }}
-                >
-                  News
-                </Typography>
-              </Link>
-            </Box>
-            <Typography variant="body2" color="gray">
+                priority
+              />
+            </Link>
+            <Typography variant="body2" color="gray" sx={{ mt: 2 }}>
               Your daily AI-powered news hub for the latest in tech, startups,
               and innovation.
             </Typography>
@@ -145,7 +129,7 @@ export default function Footer() {
         >
           <Typography variant="body2">
             © {new Date().getFullYear()}{" "}
-            <span style={{ color: "#c42a49ff" }}>News 24*7</span> — All Rights
+            <span style={{ color: "#c42a49ff" }}>iNews 24*7</span> — All Rights
             Reserved.
           </Typography>
         </Box>

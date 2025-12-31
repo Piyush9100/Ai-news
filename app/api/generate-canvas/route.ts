@@ -60,6 +60,7 @@ export async function POST(req: Request) {
                   position:absolute;
                   top:calc(70% - 65px);
                   left:50%;
+                  width:350px;
                   transform:translateX(-50%);
                   display:flex;
                   align-items:center;
@@ -71,26 +72,15 @@ export async function POST(req: Request) {
                 "
               >
                  <img
-                  src="${process.env.NEXT_PUBLIC_BASE_URL}/newlogo.png"
+                  src="${process.env.NEXT_PUBLIC_BASE_URL}/news-24x7.png"
                   style="
-                    width:105px;
-                    height:105px;
+                    width:100%;
+                    height:auto;
                     object-fit:cover;
                     background:#fff;
                     border:4px solid #fff;
                   "
                 />
-                <div
-                  style="
-                    font-size:70px;
-                    font-weight:900;
-                    color:#e41e26;
-                    text-transform:uppercase;
-                  "
-                >
-                  News
-                </div>
-               
               </div>
 
               <!-- TITLE -->

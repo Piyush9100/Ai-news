@@ -54,9 +54,17 @@ export default function NewsCardGenerator({ category }: { category: string }) {
             href={`/view/${category}/${articles[idx]?.slug}`}
             style={{ textDecoration: "none" }}
           >
-            <Card>
+            <Card sx={{ height: "100%" }}>
               <CardContent>
-                <Typography variant="body2">{title}</Typography>
+                <Typography
+                  sx={{
+                    mb: 2,
+                    fontSize: 18,
+                    color: "#333",
+                  }}
+                >
+                  {title}
+                </Typography>
 
                 {images[idx]?.publicUrl && (
                   <img
