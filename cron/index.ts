@@ -201,7 +201,7 @@ cron.schedule("0 * * * *", async () => {
       console.error(`❌ ${category} failed`, e);
     }
   }
-
+  //--- comment this for insta stop run cron --- // 
   await autoPostFromCache();
 
   console.log("🏁 Cron finished");
