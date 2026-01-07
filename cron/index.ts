@@ -116,26 +116,46 @@ async function autoPostFromCache() {
     .select("articles, descriptions, images")
     .eq("category", "general")
     .single();
-
+console.log("cache", cache);
   if (!cache) return;
 
   const { data: existing } = await supabase
     .from("instagram_posts")
     .select("slug");
+console.log("existing", existing);
 
   const existingSlugs = new Set(existing?.map((e) => e.slug));
+console.log("existingSlugs", existingSlugs);
 
   // Queue new posts
   for (let i = 0; i < cache.articles.length; i++) {
-    const slug = cache.articles[i].slug;
+    try {
+        const slug = cache.articles[i].slug;
+    console.log('slug', slug);
+    console.log("existingSlugs.has(slug)", existingSlugs.has(slug))
     if (existingSlugs.has(slug)) continue;
 
-    await supabase.from("instagram_posts").insert({
-      slug,
-      image_url: cache.images[i].publicUrl.split("?")[0],
-      caption: cache.descriptions[i] || "",
-      status: "queued",
-    });
+      const { data, error } = await supabase
+      .from("instagram_posts")
+      .insert([
+        {
+          slug,
+          image_url: cache.images[i].publicUrl.split("?")[0],
+          caption: cache.descriptions[i] || "",
+          status: "queued",
+        }
+      ]);
+
+    if (error) {
+      console.error("Insert error:", error);
+    } else {
+      console.log("Inserted:", data);
+    }
+      
+    } catch (error) {
+      console.log("error",error);
+    }
+  
   }
 
   // Pick one queued post
@@ -191,8 +211,8 @@ async function autoPostFromCache() {
 }
 
 // ---------------- CRON ----------------
-cron.schedule("0 * * * *", async () => {
-  console.log("🕒 Cron started");
+cron.schedule("0 */6 * * *", async () => {
+  console.log("🕒 News Fetch Cron started");
 
   for (const category of CATEGORIES) {
     try {
@@ -201,10 +221,18 @@ cron.schedule("0 * * * *", async () => {
       console.error(`❌ ${category} failed`, e);
     }
   }
+ 
+  console.log("🏁  News Fetch Cron finished");
+});
+
+// ---------------- CRON ----------------
+cron.schedule("*/15 * * * *", async () => {
+  console.log("🕒 post instagram cron");
+
   //--- comment this for insta stop run cron --- // 
   await autoPostFromCache();
 
-  console.log("🏁 Cron finished");
+  console.log("🏁 Finished Instagram Post Cron");
 });
 
-console.log("🚀 Cron running...");
+console.log("🚀 App started running...");
